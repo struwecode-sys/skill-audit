@@ -16,7 +16,7 @@ Claude skills are defined in Markdown files that get loaded into conversations. 
 | **Invisible Text** | White text, transparent colors, zero-opacity text |
 | **HTML Comments** | Hidden instructions inside `<!-- -->` blocks |
 | **Suspicious JavaScript** | `eval()`, `fetch()`, `<script>` tags, inline event handlers |
-| **External URLs** | Links to non-GitHub domains that could exfiltrate data |
+| **External URLs** | Links to unexpected external domains that could exfiltrate data |
 | **Base64 Encoding** | Long encoded strings that may hide obfuscated payloads |
 | **Prompt Injection** | "Ignore previous instructions", "system override", identity hijacking |
 | **YAML Structure** | Validates frontmatter and flags suspicious YAML keys |
@@ -30,17 +30,19 @@ Claude skills are defined in Markdown files that get loaded into conversations. 
 
 ## How to Use
 
-1. **Paste a GitHub URL** to any SKILL.md file and click Scan
+1. **Paste any URL** to a SKILL.md file and click Scan — works with GitHub, GitLab, Bitbucket, or any hosted file
 2. **Or drag-and-drop** a local `.md` file (processed entirely in your browser)
 3. Review the findings, expand each one for details and line numbers
 4. Copy results to clipboard if needed
+
+GitHub blob URLs are automatically converted to raw file URLs.
 
 ## Privacy
 
 - No data is stored
 - No AI APIs are called
 - File uploads are processed locally in the browser
-- GitHub URL fetches go through a serverless function with no logging
+- URL fetches go through a serverless function with no logging
 
 ## Tech Stack
 
