@@ -10,6 +10,9 @@ import {
   Lock,
   Crosshair,
   FileCode2,
+  Terminal,
+  Radio,
+  Binary,
   AlertCircle,
   ArrowLeft,
 } from "lucide-react";
@@ -20,9 +23,16 @@ import Footer from "@/components/Footer";
 import AuditForm from "@/components/AuditForm";
 import DragDropZone from "@/components/DragDropZone";
 import ResultsDisplay from "@/components/ResultsDisplay";
+import BatchResults from "@/components/BatchResults";
+
+interface BatchResult {
+  filename: string;
+  result: AuditResult;
+}
 
 export default function Home() {
   const [result, setResult] = useState<AuditResult | null>(null);
+  const [batchResults, setBatchResults] = useState<BatchResult[] | null>(null);
   const [filename, setFilename] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +41,7 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
     setResult(null);
+    setBatchResults(null);
     setFilename(undefined);
 
     try {
@@ -48,7 +59,6 @@ export default function Home() {
       }
 
       setResult(data.result);
-      // Extract filename from URL
       const parts = url.split("/");
       setFilename(parts[parts.length - 1] || "SKILL.md");
     } catch {
@@ -62,13 +72,26 @@ export default function Home() {
     setError(null);
     setIsLoading(false);
     setFilename(name);
-    // Process locally - no API call needed
+    setBatchResults(null);
     const auditResult = runAudit(content);
     setResult(auditResult);
   }
 
+  function handleBatchFiles(files: Array<{ name: string; content: string }>) {
+    setError(null);
+    setIsLoading(false);
+    setResult(null);
+    setFilename(undefined);
+    const results = files.map((f) => ({
+      filename: f.name,
+      result: runAudit(f.content),
+    }));
+    setBatchResults(results);
+  }
+
   function handleReset() {
     setResult(null);
+    setBatchResults(null);
     setFilename(undefined);
     setError(null);
   }
@@ -105,7 +128,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <DragDropZone onFileContent={handleFileContent} />
+              <DragDropZone onFileContent={handleFileContent} onBatchFiles={handleBatchFiles} />
             </div>
 
             {/* Error display */}
@@ -137,9 +160,12 @@ export default function Home() {
                   { Icon: MessageSquareCode, label: "HTML Comments", desc: "Hidden instructions in comments" },
                   { Icon: Zap, label: "JavaScript", desc: "eval, fetch, script tags" },
                   { Icon: ExternalLink, label: "External URLs", desc: "Non-GitHub domain links" },
-                  { Icon: Lock, label: "Base64 Encoding", desc: "Obfuscated encoded content" },
+                  { Icon: Lock, label: "Base64 Encoding", desc: "Decodes and scans hidden content" },
                   { Icon: Crosshair, label: "Prompt Injection", desc: "Override/ignore instructions" },
                   { Icon: FileCode2, label: "YAML Structure", desc: "Frontmatter validation" },
+                  { Icon: Terminal, label: "Shell Commands", desc: "rm, curl, sudo, spawn, subprocess" },
+                  { Icon: Radio, label: "Data Exfiltration", desc: "Sensitive data near network calls" },
+                  { Icon: Binary, label: "Unicode Obfuscation", desc: "Zero-width chars, homoglyphs, RTL" },
                 ].map((check) => (
                   <div key={check.label} className="flex items-start gap-3 text-sm">
                     <check.Icon className="w-5 h-5 shrink-0 text-gray-500 dark:text-gray-400" />
@@ -157,7 +183,7 @@ export default function Home() {
         )}
 
         {/* Results section */}
-        {result && (
+        {(result || batchResults) && (
           <div className="space-y-4">
             <button
               onClick={handleReset}
@@ -166,7 +192,8 @@ export default function Home() {
               <ArrowLeft className="w-4 h-4" />
               Scan another file
             </button>
-            <ResultsDisplay result={result} filename={filename} />
+            {result && <ResultsDisplay result={result} filename={filename} />}
+            {batchResults && <BatchResults results={batchResults} />}
           </div>
         )}
       </main>

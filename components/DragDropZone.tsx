@@ -5,11 +5,12 @@ import { CloudUpload } from "lucide-react";
 
 interface DragDropZoneProps {
   onFileContent: (content: string, filename: string) => void;
+  onBatchFiles?: (files: Array<{ name: string; content: string }>) => void;
 }
 
 const MAX_FILE_SIZE = 500_000; // 500KB
 
-export default function DragDropZone({ onFileContent }: DragDropZoneProps) {
+export default function DragDropZone({ onFileContent, onBatchFiles }: DragDropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -40,11 +41,55 @@ export default function DragDropZone({ onFileContent }: DragDropZoneProps) {
     reader.readAsText(file);
   }
 
+  function processMultipleFiles(fileList: FileList) {
+    const mdFiles = Array.from(fileList).filter((f) => f.name.endsWith(".md"));
+    if (mdFiles.length === 0) {
+      setError("No Markdown (.md) files found.");
+      return;
+    }
+    if (mdFiles.length === 1) {
+      processFile(mdFiles[0]);
+      return;
+    }
+    if (!onBatchFiles) {
+      processFile(mdFiles[0]);
+      return;
+    }
+
+    const totalSize = mdFiles.reduce((sum, f) => sum + f.size, 0);
+    if (totalSize > MAX_FILE_SIZE * 10) {
+      setError("Total file size is too large (max 5MB for batch).");
+      return;
+    }
+
+    setError(null);
+    const results: Array<{ name: string; content: string }> = [];
+    let loaded = 0;
+    for (const file of mdFiles) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const content = ev.target?.result;
+        if (typeof content === "string") {
+          results.push({ name: file.name, content });
+        }
+        loaded++;
+        if (loaded === mdFiles.length) {
+          onBatchFiles(results);
+        }
+      };
+      reader.readAsText(file);
+    }
+  }
+
   function handleDrop(e: React.DragEvent) {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) processFile(file);
+    if (e.dataTransfer.files.length > 1) {
+      processMultipleFiles(e.dataTransfer.files);
+    } else {
+      const file = e.dataTransfer.files[0];
+      if (file) processFile(file);
+    }
   }
 
   function handleDragOver(e: React.DragEvent) {
@@ -62,9 +107,12 @@ export default function DragDropZone({ onFileContent }: DragDropZoneProps) {
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) processFile(file);
-    // Reset so the same file can be re-selected
+    if (e.target.files && e.target.files.length > 1) {
+      processMultipleFiles(e.target.files);
+    } else {
+      const file = e.target.files?.[0];
+      if (file) processFile(file);
+    }
     e.target.value = "";
   }
 
@@ -90,7 +138,7 @@ export default function DragDropZone({ onFileContent }: DragDropZoneProps) {
       >
         <CloudUpload className="w-8 h-8 text-gray-400" strokeWidth={1.5} />
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Drop a <span className="font-medium">.md</span> file here or{" "}
+          Drop <span className="font-medium">.md</span> file(s) here or{" "}
           <span className="text-blue-600 dark:text-blue-400 font-medium">
             click to browse
           </span>
@@ -99,6 +147,7 @@ export default function DragDropZone({ onFileContent }: DragDropZoneProps) {
           ref={fileInputRef}
           type="file"
           accept=".md"
+          multiple
           onChange={handleFileChange}
           className="hidden"
           aria-hidden="true"

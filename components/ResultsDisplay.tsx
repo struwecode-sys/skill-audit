@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, ShieldCheck } from "lucide-react";
+import { Check, Copy, ShieldCheck, Download } from "lucide-react";
 import type { AuditResult } from "@/lib/auditEngine";
-import { riskLevelColor, riskLevelBgLight, formatResultsForClipboard } from "@/lib/utils";
+import { riskLevelColor, riskLevelBgLight, formatResultsForClipboard, formatResultsAsJSON, formatResultsAsMarkdown } from "@/lib/utils";
 import RiskMeter from "./RiskMeter";
 import FindingCard from "./FindingCard";
 
@@ -21,7 +21,6 @@ export default function ResultsDisplay({ result, filename }: ResultsDisplayProps
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback for older browsers
       const textarea = document.createElement("textarea");
       textarea.value = formatResultsForClipboard(result);
       document.body.appendChild(textarea);
@@ -31,6 +30,16 @@ export default function ResultsDisplay({ result, filename }: ResultsDisplayProps
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
+  }
+
+  function downloadFile(content: string, name: string, type: string) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -51,23 +60,41 @@ export default function ResultsDisplay({ result, filename }: ResultsDisplayProps
               {result.summary}
             </p>
           </div>
-          <button
-            onClick={handleCopy}
-            className="shrink-0 inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
-            aria-label="Copy results to clipboard"
-          >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4 text-green-600" />
-                Copied
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4" />
-                Copy
-              </>
-            )}
-          </button>
+          <div className="flex gap-2 shrink-0">
+            <button
+              onClick={handleCopy}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
+              aria-label="Copy results to clipboard"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 text-green-600" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  Copy
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => downloadFile(formatResultsAsJSON(result, filename), "skill-audit-report.json", "application/json")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
+              aria-label="Download JSON report"
+            >
+              <Download className="w-4 h-4" />
+              JSON
+            </button>
+            <button
+              onClick={() => downloadFile(formatResultsAsMarkdown(result, filename), "skill-audit-report.md", "text/markdown")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
+              aria-label="Download Markdown report"
+            >
+              <Download className="w-4 h-4" />
+              MD
+            </button>
+          </div>
         </div>
       </div>
 

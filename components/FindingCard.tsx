@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { Finding } from "@/lib/auditEngine";
-import { severityBadgeBg } from "@/lib/utils";
+import { severityBadgeBg, confidenceBadgeBg } from "@/lib/utils";
 
 interface FindingCardProps {
   finding: Finding;
@@ -28,6 +28,11 @@ export default function FindingCard({ finding, index }: FindingCardProps) {
         </span>
         <span className="flex-1 text-sm font-medium truncate">
           {finding.category}
+        </span>
+        <span
+          className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs ${confidenceBadgeBg(finding.confidence)}`}
+        >
+          {finding.confidence}
         </span>
         <ChevronDown
           className={`shrink-0 w-4 h-4 text-gray-400 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
