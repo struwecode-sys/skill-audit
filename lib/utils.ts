@@ -120,13 +120,10 @@ export function formatResultsForClipboard(result: AuditResult): string {
   return text;
 }
 
-export function validateGitHubUrl(url: string): boolean {
+export function validateUrl(url: string): boolean {
   try {
     const parsed = new URL(url);
-    return (
-      parsed.hostname === "github.com" ||
-      parsed.hostname === "raw.githubusercontent.com"
-    );
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
   } catch {
     return false;
   }

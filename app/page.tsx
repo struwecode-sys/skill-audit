@@ -86,8 +86,8 @@ export default function Home() {
                 Audit a Claude Skill
               </h2>
               <p className="text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
-                Paste a GitHub link to a SKILL.md file or drag-and-drop a local
-                file to scan for security vulnerabilities.
+                Paste a URL to a SKILL.md file or drag-and-drop a local file to
+                scan for security vulnerabilities.
               </p>
             </div>
 

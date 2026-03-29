@@ -22,7 +22,7 @@ export default function AuditForm({ onSubmit, isLoading }: AuditFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <label htmlFor="github-url" className="block text-sm font-medium">
-        GitHub URL to SKILL.md
+        URL to SKILL.md
       </label>
       <div className="flex gap-2">
         <input
@@ -30,7 +30,7 @@ export default function AuditForm({ onSubmit, isLoading }: AuditFormProps) {
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://github.com/user/repo/blob/main/SKILL.md"
+          placeholder="https://example.com/path/to/SKILL.md"
           className="flex-1 min-w-0 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-shadow"
           disabled={isLoading}
           required

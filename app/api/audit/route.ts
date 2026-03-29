@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runAudit } from "@/lib/auditEngine";
-import { convertGitHubUrl, validateGitHubUrl } from "@/lib/utils";
+import { convertGitHubUrl, validateUrl } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 
     if (!url && !content) {
       return NextResponse.json(
-        { success: false, error: "Please provide a GitHub URL or file content." },
+        { success: false, error: "Please provide a URL or file content." },
         { status: 400 }
       );
     }
@@ -17,13 +17,14 @@ export async function POST(request: NextRequest) {
     let fileContent: string;
 
     if (url) {
-      if (!validateGitHubUrl(url)) {
+      if (!validateUrl(url)) {
         return NextResponse.json(
-          { success: false, error: "Please provide a valid GitHub URL." },
+          { success: false, error: "Please provide a valid URL." },
           { status: 400 }
         );
       }
 
+      // Convert GitHub blob URLs to raw URLs; pass others through
       const rawUrl = convertGitHubUrl(url);
 
       try {
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
           );
         }
         return NextResponse.json(
-          { success: false, error: "Network error. Could not reach GitHub." },
+          { success: false, error: "Network error. Could not reach the server." },
           { status: 502 }
         );
       }
