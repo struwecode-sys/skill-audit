@@ -75,7 +75,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header onReset={handleReset} />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 space-y-6">
         {/* Input section */}
