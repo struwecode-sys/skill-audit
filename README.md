@@ -1,4 +1,4 @@
-# 🛡️ Skill Audit
+# <img src="public/icon.svg" width="28" height="28" alt="Skill Audit" /> Skill Audit
 
 A free, open-source web app that scans Claude SKILL.md files for security vulnerabilities — no AI, no API calls, just pattern matching.
 
