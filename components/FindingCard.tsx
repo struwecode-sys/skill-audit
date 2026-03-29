@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import type { Finding } from "@/lib/auditEngine";
 import { severityBadgeBg } from "@/lib/utils";
 
@@ -28,14 +29,9 @@ export default function FindingCard({ finding, index }: FindingCardProps) {
         <span className="flex-1 text-sm font-medium truncate">
           {finding.category}
         </span>
-        <svg
+        <ChevronDown
           className={`shrink-0 w-4 h-4 text-gray-400 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        />
       </button>
       <div
         id={`finding-detail-${index}`}

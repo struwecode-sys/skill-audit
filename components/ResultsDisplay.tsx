@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Copy, ShieldCheck } from "lucide-react";
 import type { AuditResult } from "@/lib/auditEngine";
 import { riskLevelColor, riskLevelBgLight, formatResultsForClipboard } from "@/lib/utils";
 import RiskMeter from "./RiskMeter";
@@ -57,16 +58,12 @@ export default function ResultsDisplay({ result, filename }: ResultsDisplayProps
           >
             {copied ? (
               <>
-                <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+                <Check className="w-4 h-4 text-green-600" />
                 Copied
               </>
             ) : (
               <>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
+                <Copy className="w-4 h-4" />
                 Copy
               </>
             )}
@@ -113,6 +110,7 @@ export default function ResultsDisplay({ result, filename }: ResultsDisplayProps
 
       {result.findings.length === 0 && (
         <div className="text-center py-8">
+          <ShieldCheck className="w-10 h-10 text-green-600 dark:text-green-400 mx-auto mb-3" />
           <p className="text-green-600 dark:text-green-400 font-medium">
             No security issues found!
           </p>

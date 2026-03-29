@@ -1,6 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import {
+  EyeOff,
+  Type,
+  MessageSquareCode,
+  Zap,
+  ExternalLink,
+  Lock,
+  Crosshair,
+  FileCode2,
+  AlertCircle,
+  ArrowLeft,
+} from "lucide-react";
 import type { AuditResult } from "@/lib/auditEngine";
 import { runAudit } from "@/lib/auditEngine";
 import Header from "@/components/Header";
@@ -103,9 +115,7 @@ export default function Home() {
                 role="alert"
               >
                 <div className="flex gap-3">
-                  <svg className="shrink-0 w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <AlertCircle className="shrink-0 w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-red-800 dark:text-red-300">
                       {error}
@@ -122,17 +132,17 @@ export default function Home() {
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  { icon: "👁️", label: "Hidden CSS", desc: "display:none, visibility:hidden, opacity:0" },
-                  { icon: "🔤", label: "Invisible Text", desc: "White/transparent text colors" },
-                  { icon: "💬", label: "HTML Comments", desc: "Hidden instructions in comments" },
-                  { icon: "⚡", label: "JavaScript", desc: "eval, fetch, script tags" },
-                  { icon: "🔗", label: "External URLs", desc: "Non-GitHub domain links" },
-                  { icon: "🔒", label: "Base64 Encoding", desc: "Obfuscated encoded content" },
-                  { icon: "🎯", label: "Prompt Injection", desc: "Override/ignore instructions" },
-                  { icon: "📄", label: "YAML Structure", desc: "Frontmatter validation" },
+                  { Icon: EyeOff, label: "Hidden CSS", desc: "display:none, visibility:hidden, opacity:0" },
+                  { Icon: Type, label: "Invisible Text", desc: "White/transparent text colors" },
+                  { Icon: MessageSquareCode, label: "HTML Comments", desc: "Hidden instructions in comments" },
+                  { Icon: Zap, label: "JavaScript", desc: "eval, fetch, script tags" },
+                  { Icon: ExternalLink, label: "External URLs", desc: "Non-GitHub domain links" },
+                  { Icon: Lock, label: "Base64 Encoding", desc: "Obfuscated encoded content" },
+                  { Icon: Crosshair, label: "Prompt Injection", desc: "Override/ignore instructions" },
+                  { Icon: FileCode2, label: "YAML Structure", desc: "Frontmatter validation" },
                 ].map((check) => (
                   <div key={check.label} className="flex items-start gap-3 text-sm">
-                    <span className="text-lg shrink-0">{check.icon}</span>
+                    <check.Icon className="w-5 h-5 shrink-0 text-gray-500 dark:text-gray-400" />
                     <div>
                       <p className="font-medium">{check.label}</p>
                       <p className="text-gray-500 dark:text-gray-400 text-xs">
@@ -153,9 +163,7 @@ export default function Home() {
               onClick={handleReset}
               className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
+              <ArrowLeft className="w-4 h-4" />
               Scan another file
             </button>
             <ResultsDisplay result={result} filename={filename} />

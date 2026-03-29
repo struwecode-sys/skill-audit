@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { CloudUpload } from "lucide-react";
 
 interface DragDropZoneProps {
   onFileContent: (content: string, filename: string) => void;
@@ -87,9 +88,7 @@ export default function DragDropZone({ onFileContent }: DragDropZoneProps) {
             : "border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600"
         }`}
       >
-        <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
+        <CloudUpload className="w-8 h-8 text-gray-400" strokeWidth={1.5} />
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Drop a <span className="font-medium">.md</span> file here or{" "}
           <span className="text-blue-600 dark:text-blue-400 font-medium">
